@@ -1,37 +1,95 @@
+import '@mantine/core/styles.css';
 import { useState } from 'react'
-import UpdateElectron from '@/components/update'
-import logoVite from './assets/logo-vite.svg'
-import logoElectron from './assets/logo-electron.svg'
+import { UnstyledButton, Tooltip, Title, rem, MantineProvider } from '@mantine/core';
+import {
+    IconHome2,
+    IconGauge,
+    IconDeviceDesktopAnalytics,
+    IconFingerprint,
+    IconCalendarStats,
+    IconUser,
+    IconSettings,
+} from '@tabler/icons-react';
+import {theme} from './theme';
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-  return (
-    <div className='App'>
-      <div className='logo-box'>
-        <a href='https://github.com/electron-vite/electron-vite-react' target='_blank'>
-          <img src={logoVite} className='logo vite' alt='Electron + Vite logo' />
-          <img src={logoElectron} className='logo electron' alt='Electron + Vite logo' />
-        </a>
-      </div>
-      <h1>Electron + Vite + React</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Electron + Vite logo to learn more
-      </p>
-      <div className='flex-center'>
-        Place static files into the<code>/public</code> folder <img style={{ width: '5em' }} src='./node.svg' alt='Node logo' />
-      </div>
+const mainLinksMockData = [
+    { icon: IconHome2, label: 'Home' },
+    { icon: IconGauge, label: 'Dashboard' },
+    { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
+    { icon: IconCalendarStats, label: 'Releases' },
+    { icon: IconUser, label: 'Account' },
+    { icon: IconFingerprint, label: 'Security' },
+    { icon: IconSettings, label: 'Settings' },
+];
 
-      <UpdateElectron />
-    </div>
+const linksMockData = [
+    'Security',
+    'Settings',
+    'Dashboard',
+    'Releases',
+    'Account',
+    'Orders',
+    'Clients',
+    'Databases',
+    'Pull Requests',
+    'Open Issues',
+    'Wiki pages',
+];
+
+function App() {
+    const [active, setActive] = useState('Releases');
+    const [activeLink, setActiveLink] = useState('Settings');
+    const mainLinks = mainLinksMockData.map((link) => (
+        <Tooltip
+            label={link.label}
+            position="right"
+            withArrow
+            transitionProps={{ duration: 0 }}
+            key={link.label}
+        >
+            <UnstyledButton
+                onClick={() => setActive(link.label)}
+                className='mainLink'
+                data-active={link.label === active || undefined}
+            >
+                <link.icon style={{ width: rem(22), height: rem(22) }} stroke={1.5} />
+            </UnstyledButton>
+        </Tooltip>
+    ));
+
+    const links = linksMockData.map((link) => (
+        <a
+            className='link'
+            data-active={activeLink === link || undefined}
+            href="#"
+            onClick={(event) => {
+                event.preventDefault();
+                setActiveLink(link);
+            }}
+            key={link}
+        >
+            {link}
+        </a>
+    ));
+  return (
+      <MantineProvider theme={theme}>
+          <nav className='navbar'>
+              <div className='wrapper'>
+                  <div className='aside'>
+                      <div className='logo'>
+                      </div>
+                      {mainLinks}
+                  </div>
+                  <div className='main'>
+                      <Title order={4} className='title'>
+                          {active}
+                      </Title>
+                      {links}
+                  </div>
+              </div>
+          </nav>
+      </MantineProvider>
   )
 }
 
